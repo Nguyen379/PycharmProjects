@@ -39,6 +39,8 @@ class Player:
         self.chip = 1000
         self.hand_total = 0
         self.ace = 0
+        self.bet = 0
+        self.status = "Nothing"
 
     def receive_card(self, card):
         self.hand.append(card)
@@ -64,6 +66,7 @@ class Player:
         if self.hand_total == 21 and len(self.hand) == 2:
             self.hand_status()
             print("BLACKJACK!!")
+            self.status = "BLACKJACK"
             round_on = False
         elif self.hand_total > 21 and self.ace >= 1:
             while self.hand_total > 21 and self.ace >= 1:
@@ -72,6 +75,7 @@ class Player:
             if self.hand_total > 21:
                 self.hand_status()
                 print("Busted")
+                self.status = "Busted"
                 round_on = False
             else:
                 self.hand_status()
@@ -80,7 +84,20 @@ class Player:
         elif self.hand_total > 21:
             self.hand_status()
             print("Busted")
+            self.status = "Busted"
             round_on = False
+
+    def betting(self):
+        while True:
+            try:
+                print(f"You have {self.chip}")
+                self.bet = int(input("How much you want to bet: "))
+                if self.bet > self.chip:
+                    print(f"You can't bet more than {self.chip}")
+                else:
+                    break
+            except:
+                print("Integer only")
 
     def hit_or_stand(self):
         global round_on
@@ -105,6 +122,7 @@ class House:
         self.chip = 1000
         self.hand_total = 0
         self.ace = 0
+        self.status = "Nothing"
 
     def receive_card(self, card):
         self.hand.append(card)
@@ -132,6 +150,7 @@ class House:
             if self.hand_total == 21 and len(self.hand) == 2:
                 self.hand_status()
                 print("BLACKJACK!!")
+                self.status = "BLACKJACK"
             elif self.hand_total > 21 and self.ace >= 1:
                 while self.hand_total > 21 and self.ace >= 1:
                     self.hand_total -= 10
@@ -139,16 +158,19 @@ class House:
                 if self.hand_total > 21:
                     self.hand_status()
                     print("Busted")
-                else:
-                    self.hand_status()
+                    self.status = "Busted"
+                elif self.hand_total < 17:
+                    self.receive_card(deck.deal_card())
+                    self.check_busted()
             elif 17 < self.hand_total <= 21:
                 self.hand_status()
             elif self.hand_total > 21:
                 self.hand_status()
                 print("Busted")
+                self.status = "Busted"
             else:
-                house.receive_card(deck.deal_card())
-                house.hand_status()
+                self.receive_card(deck.deal_card())
+                self.check_busted()
         else:
             print("The house has: ")
             print("Hidden card")
@@ -159,20 +181,64 @@ class House:
         pass
 
 
+def compare_point(p, h):
+    if p.status == "BLACKJACK" and h.status == "BLACKJACK":
+        print("Draw. Next Round")
+    elif p.status == "BLACKJACK":
+        print("You win")
+        p.chip += p.bet
+        print(f'You now have {p.chip}')
+    elif p.status == "Busted" and h.status == "Busted":
+        print("Draw. Next round")
+    elif p.status == "Busted":
+        print("You lost")
+        p.chip -= p.bet
+        print(f'You now have {p.chip}')
+    elif h.status == "Busted":
+        print("You win")
+        p.chip += p.bet
+        print(f'You now have {p.chip}')
+    elif p.hand_total > h.hand_total:
+        print("You win")
+        p.chip += p.bet
+        print(f'You now have {p.chip}')
+    elif p.hand_total == h.hand_total:
+        print("Draw. Next round")
+    else:
+        print("You lost")
+        p.chip -= p.bet
+        print(f'You now have {p.chip}')
+    if p.chip == 0:
+        print("You have lost")
+        return "break"
+    else:
+        return "continue"
+
+
 if __name__ == '__main__':
-    deck = Deck()
-    deck.shuffle()
-    game_on = True
-    round_on = True
     player1 = Player()
     house = House()
-    while game_on:
+    while True:
+        deck = Deck()
+        deck.shuffle()
+        game_on = True
+        round_on = True
         while round_on:
+            player1.betting()
             for _ in range(2):
                 player1.receive_card(deck.deal_card())
                 house.receive_card(deck.deal_card())
             house.check_busted()
             player1.hit_or_stand()
         house.check_busted()
-        break
+        game_state = compare_point(player1, house)
+        if game_state == "continue":
+            player1.hand = []
+            house.hand = []
+            player1.status = "Nothing"
+            house.status = "Nothing"
+            continue
+        elif game_state == "break":
+            print("Game over")
+            break
 
