@@ -1,5 +1,5 @@
-
 import numpy as np
+
 """Buoi 1: Numpy"""
 a = np.array([[1, 2, 3, 4, 5]], dtype='float32')
 print(type(a))
@@ -150,6 +150,7 @@ print(dict_vect.get_feature_names())
 """Buoi 2: Pandas"""
 import pandas as pd
 import numpy as np
+
 # data = pd.Series([0.25, 0.5, 0.75, 1.0])
 # print(data)
 # print(data.index)
@@ -196,3 +197,24 @@ states.applymap(np.log)
 # np.log: function
 # np.log(): function.invocation
 # axis = 0 apply function to each column, = 1 apply function to each row
+import pandas as pd
+
+df = pd.DataFrame({'A': [1, 2, 3, 4],
+                   'B': [10, 20, 30, 40],
+                   'C': [20, 40, 60, 80]
+                   },
+                  index=['Row 1', 'Row 2', 'Row 3', 'Row 4'])
+
+
+def custom_sum(row):
+    return row.sum()
+
+
+df["column"] = df.apply(custom_sum, axis=1)
+df.loc["row"] = df.apply(custom_sum, axis=0)
+print(df)
+print(df.apply(custom_sum, axis=1))
+print(df.apply(custom_sum, axis=0))
+
+# apply: used to modify dataframe itself
+# applymap: used to apply changes to elements of dataframe
