@@ -15,18 +15,13 @@ df0 = df[df.target == 0]
 df1 = df[df.target == 1]
 df2 = df[df.target == 2]
 
-fig1, ax1 = plt.subplots()
-fig2, ax2 = plt.subplots()
-
 plt.scatter(df0["sepal length (cm)"], df0["sepal width (cm)"], c=df0["petal length (cm)"], cmap="summer")
 plt.scatter(df1["sepal length (cm)"], df1["sepal width (cm)"], c=df1["petal length (cm)"], cmap="summer")
-cbar1 = plt.colorbar()
-
+cbar = plt.colorbar()
+cbar.set_label('Petal length ratio')
 plt.title('Iris 0 vs 2')
 plt.xlabel('Sepal length')
 plt.ylabel('Sepal width')
-
-
 
 plt.tight_layout()
 plt.show()
