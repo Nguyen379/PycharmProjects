@@ -12,14 +12,128 @@ from termcolor import colored, COLORS
 import unittest
 import os
 from pythonProject.Classes import Employee
-import sqlite3
 from tkinter import *
 from PIL import ImageTk, Image
 from tkinter import messagebox
 from tkinter import filedialog
 import cap
+import sqlite3
+import re
 
-'''Basic'''
+
+def regular_expression():
+    text_to_search = '''
+    abcdefghijklmnopqurtuvwxyz
+    ABCDEFGHIJKLMNOPQRSTUVWXYZ
+    1234567890
+    Ha HaHa
+    MetaCharacters (Need to be escaped):
+    . ^ $ * + ? { } [ ] \ | ( )
+    coreyms.com
+    321-555-4321
+    123.555.1234
+    123*555*1234
+    800-555-1234
+    900-555-1234
+    Mr. Schafer
+    Mr Smith
+    Ms Davis
+    Mrs. Robinson
+    Mr. T
+    '''
+    sentence = 'Start a sentence and then bring it to an end'
+    pattern = re.compile(r"\d\d\d.\d\d\d.\d\d\d\d")
+    matches = pattern.finditer(text_to_search)
+    # literal search
+    for match in matches:
+        print(match)
+
+    with open("data.txt", "r") as f:
+        contents = f.read()
+        pattern = re.compile(r"(Mr|Ms|Mrs)\.?\s[A-Z]\w*")  # anything except inside brackets
+        # []: a single character inside bracket
+        # [1-5]: any single character from 1 to 5
+        # [a-zA-Z]: from a to z, from A to Z
+        # cach 1: pattern = re.compile(r"\d\d\d.\d\d\d.\d\d\d\d")
+        # cach 2: pattern = re.compile(r"\d{3}.\d{3}.\d{4}
+        # {n}: n times, {n,m}: n to m times
+        # x*: 0 or more occurrences of x
+        # x+: 1 or more occurrences of x
+        # x?: 0 or 1 occurrence of x
+        # (): multiple patterns
+
+        matches = pattern.finditer(text_to_search)
+        for match in matches:
+            print(match)
+
+    emails = '''
+    CoreyMSchafer@gmail.com
+    corey.schafer@university.edu
+    corey-321-schafer@my-work.net
+    '''
+    # pattern = re.compile(r"[a-zA-Z0-9_+.-]+@[a-zA-Z0-9_+.-]+\.(com|edu|net)")
+
+    urls = '''
+    https://www.google.com
+    http://coreyms.com
+    https://youtube.com
+    https://www.nasa.gov
+    '''
+    pattern = re.compile(r"https?://(www\.)?(\w+)(\.\w+)")
+    matches = pattern.finditer(urls)
+    # findall: return only group if there are groups or else return fully
+    for match in matches:
+        print(match.group(1))
+        # 0 print all, 1 first group () in this case www.
+
+    subbed_urls = pattern.sub(r'\2\3', urls)
+    # substitute matched results in urls with group 2 and 3 of said url.
+    print(subbed_urls)
+
+    pattern = re.compile(r'Start', re.IGNORECASE)
+    # re.IGNORECASE = ignore upper and lower case
+
+    matches = pattern.match(sentence)
+    # doesn't return an iterable, only 1st match
+    print(matches)
+
+
+def sql3():
+
+    conn = sqlite3.connect(':memory:')
+    c = conn.cursor()
+    # method such as CREATE, INSERT, SELECT are capitalized for readability
+    # even if uncapitalized they still work
+    # execute only
+    c.execute("""CREATE TABLE employees (
+                first text,
+                last text,
+                pay integer
+                )""")
+
+    ''' Long way
+    c.execute("INSERT INTO employees VALUES ('Corey', 'Schafer', 5000)")
+    c.execute("INSERT INTO employees VALUES ('Nguyen', 'Le', 1000)")
+    c.execute("INSERT INTO employees VALUES ('kaboom', 'hi', 10000)")
+    '''
+
+    'Short way'
+    name_list = [('Corey', 'Schafer', 5000), ('Nguyen', 'Le', 1000), ('kaboom', 'hi', 10000)]
+    c.executemany("INSERT INTO employees VALUES(?,?,?)", name_list)
+
+    # In order to print out a value, you need to select it first
+    t = ('Nguyen',)
+    # use tuple since string operations are prone to errors
+    c.execute("SELECT * FROM employees where first=?", t)
+    # ? is where you want to place, where to specify what value to take
+    print(c.fetchone())
+
+    c.execute("SELECT * FROM employees")
+    print(c.fetchall())
+
+    conn.commit()
+
+    conn.close()
 
 
 def basic():

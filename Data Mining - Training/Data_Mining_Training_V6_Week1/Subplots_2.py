@@ -31,6 +31,7 @@ cbar2.set_label('Petal length ratio')
 ax2.set_title('Iris 0 vs 2')
 ax2.set_xlabel('Sepal length')
 ax2.set_ylabel('Sepal width')
-
+# ax2.set_xlim([-1, 11])
+# ax2.set_ylim([-1.5, 1.5])
 plt.tight_layout()
 plt.show()

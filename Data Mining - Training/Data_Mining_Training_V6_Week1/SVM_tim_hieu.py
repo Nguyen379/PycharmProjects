@@ -1,12 +1,14 @@
 # training model: use the info to draw a graph
 # testing model: check to see how well the graph
 # bias: how well it fits training model, variant: how well it fits testing model
+
 import pandas as pd
 from sklearn.datasets import load_iris
 from matplotlib import pyplot as plt
 from sklearn.model_selection import train_test_split
 from sklearn.svm import SVC
 import numpy as np
+
 iris = load_iris()
 print(iris.target_names)
 df = pd.DataFrame(iris.data, columns=iris.feature_names)
