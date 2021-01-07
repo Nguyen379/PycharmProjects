@@ -11,8 +11,14 @@ from nltk.stem import PorterStemmer
 from nltk.corpus import state_union
 from nltk.stem import WordNetLemmatizer
 from nltk.corpus import wordnet
-import random
 from nltk.corpus import movie_reviews
+from sklearn.naive_bayes import MultinomialNB, GaussianNB, BernoulliNB
+from sklearn.linear_model import LogisticRegression, SGDClassifier
+from sklearn.svm import SVC, LinearSVC, NuSVC
+from nltk.classify.scikitlearn import SklearnClassifier
+from nltk.classify import ClassifierI
+from statistics import mode
+import random
 import pickle
 
 "Separate into sentences, words"
@@ -74,7 +80,6 @@ def process_content_ne_chunk():
 
 print(process_content_ne_chunk())
 
-
 'Lemmatizer'
 
 lemmatizer = WordNetLemmatizer()
@@ -121,7 +126,6 @@ w3 = wordnet.synset("car.n.01")
 w4 = wordnet.synset("cat.n.01")
 print(w1.wup_similarity(w3))
 print(w1.wup_similarity(w4))
-
 
 "Text classification"
 # Movie reviews contain 2 category negative and positive each containing numerous txt files
@@ -191,3 +195,88 @@ classfier = nltk.NaiveBayesClassifier.train(training_set)
 classifier_f = open("naivebayes.pickle", "rb")
 classifier = pickle.load(classifier_f)
 # print(nltk.classify.accuracy(classifier, testing_set))
+
+"MultinomialNB, GaussianNB, BernoulliNB, NB= Naivebayes"
+
+'''
+1.Gaussian NB: should be used for features in decimal form. GNB assumes features to follow a normal distribution.
+2.MultiNomial NB: should be used for the features with discrete values like word count 1,2,3...
+3.Bernoulli NB: should be used for features with binary or boolean values like True/False or 0/1.
+'''
+MNB_classifier = SklearnClassifier(MultinomialNB())
+# MultinomialNB() now inherits sklearnclassifier's methods such as .train
+MNB_classifier.train(training_set)
+# print(nltk.classify.accuracy(MNB_classifier, testing_set))
+
+# GNB_classifier = SklearnClassifier(GaussianNB())
+# GNB_classifier.train(training_set)
+# print(nltk.classify.accuracy(GNB_classifier, testing_set))
+BNB_classifier = SklearnClassifier(BernoulliNB())
+BNB_classifier.train(training_set)
+# print(nltk.classify.accuracy(BNB_classifier, testing_set))
+
+"LogisticRegression, SGDClassifier, SVC"
+
+
+class VoteClassifier(ClassifierI):
+    def __init__(self, *classifiers):
+        self.classifiers = classifiers
+
+    def classify(self, features):
+        votes = []
+        for c in self.classifiers:
+            v = c.classify(features)
+            # each classifier classifies features (feature words) based on given category
+            votes.append(v)
+        # votes have different results, mode returns the most voted result
+        return mode(votes)
+
+    def confidence(self, features):
+        votes = []
+        for c in self.classifiers:
+            v = c.classify(features)
+            votes.append(v)
+        choice_votes = votes.count(mode(votes))
+        conf = choice_votes / len(votes)
+        return conf
+
+
+# linear regression is for predicting continuous output, logistic regression is for classification, categorization
+LR_classifier = SklearnClassifier(LogisticRegression())
+LR_classifier.train(training_set)
+# print(nltk.classify.accuracy(LR_classifier, testing_set))
+
+SGDCC_classifier = SklearnClassifier(SGDClassifier())
+SGDCC_classifier.train(training_set)
+# print(nltk.classify.accuracy(SGDCC_classifier, testing_set))
+
+SVC_classifier = SklearnClassifier(SVC())
+SVC_classifier.train(training_set)
+# print(nltk.classify.accuracy(SVC_classifier, testing_set))
+
+Linear_SVC_classifier = SklearnClassifier(LinearSVC())
+Linear_SVC_classifier.train(training_set)
+# print(nltk.classify.accuracy(Linear_SVC_classifier, testing_set))
+
+NuSVC_classifier = SklearnClassifier(NuSVC())
+NuSVC_classifier.train(training_set)
+# print(nltk.classify.accuracy(NuSVC_classifier, testing_set))
+
+"Using different classifiers to vote and determine the optimal accuracy"
+voted_classifier = VoteClassifier(NuSVC_classifier, Linear_SVC_classifier, SVC_classifier, SGDCC_classifier,
+                                  LR_classifier, MNB_classifier, BNB_classifier)
+
+# print(nltk.classify.accuracy(voted_classifier, testing_set))
+#
+# print(voted_classifier.classify(testing_set[0][0]), "   ", voted_classifier.confidence(testing_set[0][0]) * 100)
+# print(testing_set[0][0])
+# print(voted_classifier.classify(testing_set[1][0]), "   ", voted_classifier.confidence(testing_set[1][0]) * 100)
+# print(testing_set[1][0])
+# print(voted_classifier.classify(testing_set[2][0]), "   ", voted_classifier.confidence(testing_set[2][0]) * 100)
+# print(testing_set[2][0])
+# print(voted_classifier.classify(testing_set[3][0]), "   ", voted_classifier.confidence(testing_set[3][0]) * 100)
+# print(testing_set[3][0])
+# print(voted_classifier.classify(testing_set[4][0]), "   ", voted_classifier.confidence(testing_set[4][0]) * 100)
+# print(testing_set[4][0])
+# print(voted_classifier.classify(testing_set[5][0]), "   ", voted_classifier.confidence(testing_set[5][0]) * 100)
+# print(testing_set[5][0])

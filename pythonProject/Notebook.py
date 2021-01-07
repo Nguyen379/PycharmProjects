@@ -97,6 +97,27 @@ def regular_expression():
     # doesn't return an iterable, only 1st match
     print(matches)
 
+    s = 'one two one two one'
+    print(s.replace(' ', '-'))
+    # one-two-one-two-one
+    print(s.replace('one', 'XXX').replace('two', 'YYY'))
+    # XXX YYY XXX YYY XXX
+
+    s = 'aaa@xxx.com bbb@yyy.com ccc@zzz.com'
+    print(re.sub('[a-z]*@', 'ABC@', s))
+    # ABC@xxx.com ABC@yyy.com ABC@zzz.com
+    print(re.sub('[a-z]*@', 'ABC@', s, 2))
+    # ABC@xxx.com ABC@yyy.com ccc@zzz.com
+    print(re.sub('[xyz]', '1', s))
+    # aaa@111.com bbb@111.com ccc@111.com
+    print(re.sub('([a-z]*)@', '\\1-123@', s))
+    # aaa-123@xxx.com bbb-123@yyy.com ccc-123@zzz.com
+    print(re.sub('([a-z]*)@', r'\1-123@', s))
+    # aaa-123@xxx.com bbb-123@yyy.com ccc-123@zzz.com
+    # if raw then \1, else \\1: refer to first group(), \\2 refers to 2nd group()
+
+
+
 
 def sql3():
 
