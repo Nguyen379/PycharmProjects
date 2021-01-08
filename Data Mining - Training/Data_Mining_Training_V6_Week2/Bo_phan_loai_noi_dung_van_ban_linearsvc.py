@@ -60,7 +60,7 @@ print(confusion_matrix(categories2, categories2_pred))
 print(classification_report(categories2, categories2_pred))
 print(accuracy_score(categories2, categories2_pred))
 
-with open("linearsvc_clf", "wb") as picklefile:
+with open("lsvc_clf", "wb") as picklefile:
     pickle.dump(clf, picklefile)
 
 
