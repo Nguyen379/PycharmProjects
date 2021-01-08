@@ -10,25 +10,26 @@ from sklearn.model_selection import train_test_split
 reviews = load_files(r"C:\Users\Asus\PycharmProjects\Data Mining - Training"
                      r"\Data_Mining_Training_V6_Week2\combined_for_cross_validation")
 files, categories = reviews.data, reviews.target
-
+max_features = []
 files_edited = []
 # training list
 for n in range(0, len(files)):
     file = str(files[n])
     # data stored as bytes => convert to string
-    file = re.sub(r'\W', ' ', file)
-    # Remove all the special characters
-    file = re.sub(r'\s+[a-zA-Z]\s+', ' ', file)
-    # remove all single characters
-    file = re.sub(r'\s+', '', file, flags=re.I)
-    # Substituting multiple spaces with single space
-    file = re.sub(r'^b\s+', '', file)
-    # Removing prefixed 'b'
-    file = file.lower()
-    # Converting to Lowercase
+    # file = re.sub(r'\W', ' ', file)
+    # # Remove all the special characters
+    # file = re.sub(r'\s+[a-zA-Z]\s+', ' ', file)
+    # # remove all single characters
+    # file = re.sub(r'\s+', '', file, flags=re.I)
+    # # Substituting multiple spaces with single space
+    # file = re.sub(r'^b\s+', '', file)
+    # # Removing prefixed 'b'
+    # file = file.lower()
+    # # Converting to Lowercase
+    max_features.extend(file.split(" "))
     files_edited.append(file)
 
-vectorizer = TfidfVectorizer(max_features=5000)
+vectorizer = TfidfVectorizer(max_features=len(set(max_features)))
 files_vectorized = vectorizer.fit_transform(files_edited).toarray()
 files_train, files_test, categories_train, categories_test = train_test_split(files_vectorized, categories)
 
