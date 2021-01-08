@@ -1,10 +1,8 @@
-import numpy as np
 import re
 from sklearn.datasets import load_files
 from sklearn.feature_extraction.text import TfidfVectorizer
 import pickle
-from nltk.classify import SklearnClassifier
-from sklearn.svm import SVC
+from sklearn.svm import LinearSVC
 from sklearn.metrics import classification_report, confusion_matrix, accuracy_score
 
 reviews = load_files(r"C:\Users\Asus\PycharmProjects\Data Mining - Training\Data_Mining_Training_V6_Week2\new train")
@@ -12,10 +10,10 @@ files, categories = reviews.data, reviews.target
 
 reviews2 = load_files(r"C:\Users\Asus\PycharmProjects\Data Mining - Training\Data_Mining_Training_V6_Week2\new test")
 files2, categories2 = reviews2.data, reviews2.target
-
 # Test files
-files_edited = []
 
+files_edited = []
+# training list
 for n in range(0, len(files)):
     file = str(files[n])
     # data stored as bytes => convert to string
@@ -32,6 +30,7 @@ for n in range(0, len(files)):
     files_edited.append(file)
 
 files_edited2 = []
+# testing list
 for n in range(0, len(files2)):
     file2 = str(files2[n])
     # data stored as bytes => convert to string
@@ -47,13 +46,13 @@ for n in range(0, len(files2)):
     # Converting to Lowercase
     files_edited2.append(file2)
 
-vectorizer = TfidfVectorizer()
+vectorizer = TfidfVectorizer(max_features=5000)
 files_vectorized = vectorizer.fit_transform(files_edited).toarray()
 
-clf = SVC()
+clf = LinearSVC()
 clf.fit(files_vectorized, categories)
 
-vectorizer2 = TfidfVectorizer()
+vectorizer2 = TfidfVectorizer(max_features=5000)
 files_vectorized2 = vectorizer2.fit_transform(files_edited2).toarray()
 
 categories2_pred = clf.predict(files_vectorized2)
@@ -61,12 +60,7 @@ print(confusion_matrix(categories2, categories2_pred))
 print(classification_report(categories2, categories2_pred))
 print(accuracy_score(categories2, categories2_pred))
 
-with open("svc_clf", "wb") as picklefile:
+with open("linearsvc_clf", "wb") as picklefile:
     pickle.dump(clf, picklefile)
 
-# with open("svc_clf", "rb") as svc_clf:
-#     clf = pickle.load(svc_clf)
-#     categories2_pred = clf.predict(files_vectorized2)
-#     print(confusion_matrix(categories2, categories2_pred))
-#     print(classification_report(categories2, categories2_pred))
-#     print(accuracy_score(categories2, categories2_pred))
+
