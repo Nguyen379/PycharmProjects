@@ -16,12 +16,12 @@ files_edited = []
 for n in range(0, len(files)):
     file = str(files[n])
     # data stored as bytes => convert to string
-    # file = re.sub(r'\W', ' ', file)
-    # # Remove all the special characters
+    file = re.sub(r'\W', ' ', file)
+    # Remove all the special characters
     # file = re.sub(r'\s+[a-zA-Z]\s+', ' ', file)
     # # remove all single characters
     # file = re.sub(r'\s+', '', file, flags=re.I)
-    # # Substituting multiple spaces with single space
+    # Substituting multiple spaces with single space
     # file = re.sub(r'^b\s+', '', file)
     # # Removing prefixed 'b'
     # file = file.lower()
@@ -29,8 +29,9 @@ for n in range(0, len(files)):
     max_features.extend(file.split(" "))
     files_edited.append(file)
 
-vectorizer = TfidfVectorizer(max_features=len(set(max_features)))
-files_vectorized = vectorizer.fit_transform(files_edited).toarray()
+vectorizer = TfidfVectorizer(max_features=80000, min_df=10)
+files_vectorized = vectorizer.fit_transform(files_edited)
+
 files_train, files_test, categories_train, categories_test = train_test_split(files_vectorized, categories)
 
 sgdc_clf = SGDClassifier()
@@ -45,8 +46,8 @@ print(lsvc_clf.score(files_test, categories_test))
 with open("lsvc_clf2", "wb") as picklefile:
     pickle.dump(lsvc_clf, picklefile)
 
-svc_clf = SVC()
-svc_clf.fit(files_train, categories_train)
-print(svc_clf.score(files_test, categories_test))
-with open("svc_clf2", "wb") as picklefile:
-    pickle.dump(svc_clf, picklefile)
+# svc_clf = SVC()
+# svc_clf.fit(files_train, categories_train)
+# print(svc_clf.score(files_test, categories_test))
+# with open("svc_clf2", "wb") as picklefile:
+#     pickle.dump(svc_clf, picklefile)
