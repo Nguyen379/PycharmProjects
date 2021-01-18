@@ -14,7 +14,7 @@ def check_word(word):
 
 
 if __name__ == '__main__':
-    s = "catsanddogxyz"
+    s = "catsanddog"
     wordDict = ["cat", "cats", "and", "sand", "dog"]
     sentences = []
     output = []
@@ -24,6 +24,8 @@ if __name__ == '__main__':
     string_sentences = map(lambda x: x.strip(), string_sentences)
     # cac cau bi thua dau spacebar hay tab thi strip di cho de nhin
     for n in string_sentences:
-        output.append(n)
+        if n.replace(" ", "") == s:
+            output.append(n)
     # cho vao output ket qua r print ra
     print(output)
+
