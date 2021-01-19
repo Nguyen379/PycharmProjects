@@ -21,6 +21,63 @@ import sqlite3
 import re
 
 
+def oop():
+    class Employee:
+
+        def __init__(self, first, last, pay):
+            self.first = first
+            self.last = last
+            self.pay = pay
+
+        def __repr__(self):
+            return "Employee('{}', '{}', {})".format(self.first, self.last, self.pay)
+
+        def __str__(self):
+            return '{} - {}'.format(self.fullname, self.email)
+
+        def __add__(self, other):
+            return self.pay + other.pay
+
+        def __len__(self):
+            return len(self.fullname)
+
+        @property
+        def email(self):
+            return '{}.{}@email.com'.format(self.first, self.last)
+
+        @property
+        def fullname(self):
+            return '{} {}'.format(self.first, self.last)
+
+        @fullname.setter
+        def fullname(self, name):
+            first, last = name.split(' ')
+            self.first = first
+            self.last = last
+
+        @fullname.deleter
+        def fullname(self):
+            print('Delete Name!')
+            self.first = None
+            self.last = None
+
+    emp_1 = Employee('John', 'Smith', 50000)
+    emp_2 = Employee('Keanu', 'Reeves', 60000)
+    print(emp_1 + emp_2)
+    # __add__ dunder creates addition method (+) for emp_1
+    # __len__ dunder creates len() method for emp_1
+
+    emp_1.fullname = "Corey Schafer"
+    # by adding a {method_name}.setter dunder after property: method => attribute that can be reassigned or "set"
+    print(emp_1.first)
+    print(emp_1.email)
+    # property change email method into attribute
+    print(emp_1.fullname)
+
+    del emp_1.fullname
+    # @{method_name}.deleter: allows attribute to be deleted
+
+
 def regular_expression():
     text_to_search = '''
     abcdefghijklmnopqurtuvwxyz
@@ -117,10 +174,7 @@ def regular_expression():
     # if raw then \1, else \\1: refer to first group(), \\2 refers to 2nd group()
 
 
-
-
 def sql3():
-
     conn = sqlite3.connect(':memory:')
     c = conn.cursor()
     # method such as CREATE, INSERT, SELECT are capitalized for readability
