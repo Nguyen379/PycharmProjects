@@ -27,7 +27,7 @@ typo = {"ă": "aw", "â": "aa", "á": "as", "à": "af", "ả": "ar", "ã": "ax",
         "Ứ": "Uws", "Ừ": "Uwf", "Ử": "Uwr", "Ữ": "Uwx",
         "Ự": "Uwj", "Í": "Is", "Ì": "If", "Ỉ": "Ir", "Ị": "Ij", "Ĩ": "Ix", "Ý": "Ys", "Ỳ": "Yf", "Ỷ": "Yr", "Ỵ": "Yj",
         "Đ": "Dd"}
-# loi danh may sai
+# loi danh may sai. Cái này em sẽ reverse để tìm lỗi sai
 
 class SentenceCorrector:
     def __init__(self, training_file):
