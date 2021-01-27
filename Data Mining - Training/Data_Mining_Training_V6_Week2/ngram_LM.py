@@ -56,7 +56,7 @@ class SentenceCorrector:
                 self.total += 1
             self.laplaceUnigramCounts[""] += 1
             self.total += 1
-            # +1 cho cái pad right ở cuối cùng vì unigram w1 ko chạy đến giá trị cuối
+            # +1 cho cái pad right ở cuối cùng vì unigram w1 ko chạy đến giá trị cuối cùng
 
     def minDistance(self, edit_original_word, candidate_word):
         h = len(edit_original_word) + 1
