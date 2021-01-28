@@ -153,6 +153,7 @@ class SentenceCorrector:
             candidate_sentence.append("")
             candidate_sentence.insert(0, "")
             score += self.score(candidate_sentence)
+            # return log score so to multiply P(x|w) x P(|w): only need to add
             if score >= bestScore:
                 bestScore = score
                 bestSentence = candidate_sentence
