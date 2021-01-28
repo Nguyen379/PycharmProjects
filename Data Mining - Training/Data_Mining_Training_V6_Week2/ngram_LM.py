@@ -27,6 +27,8 @@ typo = {"ă": "aw", "â": "aa", "á": "as", "à": "af", "ả": "ar", "ã": "ax",
         "Ứ": "Uws", "Ừ": "Uwf", "Ử": "Uwr", "Ữ": "Uwx",
         "Ự": "Uwj", "Í": "Is", "Ì": "If", "Ỉ": "Ir", "Ị": "Ij", "Ĩ": "Ix", "Ý": "Ys", "Ỳ": "Yf", "Ỷ": "Yr", "Ỵ": "Yj",
         "Đ": "Dd"}
+
+
 # loi danh may sai. Cái này em sẽ reverse để tìm lỗi sai
 
 class SentenceCorrector:
@@ -77,14 +79,16 @@ class SentenceCorrector:
                 dp[i][j] = min(deletion, insertion, replacement)
         return dp[-1][-1]
 
-    def candidate_word(self, original_word):
-        edit_original_word = ""
-        candidate_words = {}
+    def edit_original_word(self, original_word):
+        edit_original_word = original_word
         for fault in self.reverse_typo:
-            if fault in original_word:
+            if fault in edit_original_word:
                 edit_original_word = original_word.replace(fault, self.reverse_typo[fault])
-            else:
-                edit_original_word = original_word
+        return edit_original_word
+
+    def candidate_word(self, original_word):
+        candidate_words = {}
+        edit_original_word = self.edit_original_word(original_word)
         for word in self.all_words:
             candidate_words[word] = self.minDistance(edit_original_word, word)
         list_candidate_words = [k for (k, v) in sorted(candidate_words.items(), key=lambda x: x[1],
@@ -152,4 +156,12 @@ class SentenceCorrector:
 
 
 sc = SentenceCorrector('test.txt')
-print(sc.return_best_sentence('theo booj trưởng đào ngọc dun'))
+print(sc.return_best_sentence('đào ngọc dun'))
+# [('đào ngọc dung', -6.4118211062912165),
+# ('đào ngọc dẫn', -6.4118211062912165),
+# ('đào ngọc dân', -6.4118211062912165),
+# ('đào ngọc duy', -6.4118211062912165),
+# ('đào ngọc dun', -6.4118211062912165)]
+
+# em cho chayj thử thì đây là 5 ví dụ có điểm thấp nhất. Từ gốc là: "Đào Ngọc Dung". Cái này do cách tính điểm chưa tốt
+# hay là do file nhỏ quá hả anh?

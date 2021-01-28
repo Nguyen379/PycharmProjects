@@ -39,4 +39,16 @@ acronym = {"không": "ko", " anh": " a", "em": "e", "biết": "bít", "giờ": "
 teen = {"ch": "ck", "ph": "f", "th": "tk", "nh": "nk",
         "Ch": "Ck", "Ph": "F", "Th": "Tk", "Nh": "Nk"}
 
+original_word = "nguyeen"
+reverse_typo = {v: k for k, v in typo.items()}
 
+
+def edit_original_word(original_word):
+    edit_original_word = original_word
+    for fault in reverse_typo:
+        if fault in edit_original_word:
+            edit_original_word = original_word.replace(fault, reverse_typo[fault])
+    return edit_original_word
+
+
+print(edit_original_word("booj"))
