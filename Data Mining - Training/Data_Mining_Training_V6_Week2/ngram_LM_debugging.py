@@ -80,11 +80,10 @@ class SentenceCorrector:
         return dp[-1][-1]
 
     def edit_original_word(self, original_word):
-        edit_original_word = original_word
         for fault in self.reverse_typo:
-            if fault in edit_original_word:
-                edit_original_word = original_word.replace(fault, self.reverse_typo[fault])
-        return edit_original_word
+            if fault in original_word:
+                original_word = original_word.replace(fault, self.reverse_typo[fault])
+        return original_word
 
     def candidate_word(self, original_word):
         candidate_words = {}
@@ -104,7 +103,7 @@ class SentenceCorrector:
         for word in old_sentence:
             candidate_sentences.append(self.candidate_word(word)[0])
             words_count[word] = self.candidate_word(word)[1]
-            # dictionary of word - number of respective condidate_words pairs
+            # dictionary of word - number of respective candidate_words pairs
         candidate_sentences = list(product(*candidate_sentences))
         return candidate_sentences, words_count
 
@@ -132,6 +131,7 @@ class SentenceCorrector:
                 score += math.log(self.laplaceBigramCounts[(candidate_sentence[n], candidate_sentence[n + 1])])
                 score -= math.log(self.laplaceUnigramCounts[candidate_sentence[n]])
             else:
+                # if word isn't found in training data, +1 to all words
                 score += (math.log(self.laplaceUnigramCounts[candidate_sentence[n + 1]] + 1) + math.log(0.4))
                 # log(a x 0.4) = log(a) + log(0.4)
                 score -= math.log(self.total + len(self.laplaceUnigramCounts))
@@ -141,7 +141,6 @@ class SentenceCorrector:
         #   Generate all candiate sentences and
         #   Calculate the prob of each one and return the one with highest probability
         #   Probability involves two part 1. correct probability and 2. language model prob
-        #   correct prob : p(c | w)
         #   language model prob : use stupid backoff algorithm
         bestScore = float('-inf')
         bestSentence = []
@@ -149,18 +148,21 @@ class SentenceCorrector:
         candidate_sentences, word_count = self.candidate_sentence(old_sentence)
         for candidate_sentence in candidate_sentences:
             candidate_sentence = list(candidate_sentence)
-            score = self.correction_score(word_count, candidate_sentence, old_sentence)
+            score_pxw = self.correction_score(word_count, old_sentence, candidate_sentence)
             candidate_sentence.append("")
             candidate_sentence.insert(0, "")
-            score += self.score(candidate_sentence)
+            score_px = self.score(candidate_sentence)
             candidate_sentence = ' '.join(candidate_sentence[1:-1])
-            bestSentence.append((candidate_sentence, score))
-        return sorted(bestSentence, key=lambda x: x[1])[-5:]
+            bestSentence.append((candidate_sentence, score_pxw, score_px))
+        return sorted(bestSentence, key=lambda x: x[1]+x[2])[-5:]
 
 
 sc = SentenceCorrector('test.txt')
-print(sc.return_best_sentence('đào ngọc dun, booj'))
+print("chất nượng cuộc xống")
+for n in sc.return_best_sentence('chất nượng cuộc xống'):
+    print(n)
 
+# loi o old_sentence vs split_old sentence trong test 2
 
 # [('đào ngọc dung', -6.4118211062912165),
 # ('đào ngọc dẫn', -6.4118211062912165),

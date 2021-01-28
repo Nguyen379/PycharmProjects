@@ -80,11 +80,10 @@ class SentenceCorrector:
         return dp[-1][-1]
 
     def edit_original_word(self, original_word):
-        edit_original_word = original_word
         for fault in self.reverse_typo:
-            if fault in edit_original_word:
-                edit_original_word = original_word.replace(fault, self.reverse_typo[fault])
-        return edit_original_word
+            if fault in original_word:
+                original_word = original_word.replace(fault, self.reverse_typo[fault])
+        return original_word
 
     def candidate_word(self, original_word):
         candidate_words = {}
@@ -104,7 +103,7 @@ class SentenceCorrector:
         for word in old_sentence:
             candidate_sentences.append(self.candidate_word(word)[0])
             words_count[word] = self.candidate_word(word)[1]
-            # dictionary of word - number of respective condidate_words pairs
+            # dictionary of word - number of respective candidate_words pairs
         candidate_sentences = list(product(*candidate_sentences))
         return candidate_sentences, words_count
 
@@ -123,33 +122,37 @@ class SentenceCorrector:
 
     def score(self, candidate_sentence):
         # P(W)
-        #     Takes a list of strings as argument and returns the log-probability of the
-        #     sentence using the stupid backoff language model.
-        #     Use laplace smoothing to avoid new words with 0 probability
+        # Takes a list of strings as argument and returns the log-probability of the
+        # sentence using the stupid backoff language model.
+        # Use laplace smoothing to avoid new words with 0 probability
         score = 0.0
         for n in range(len(candidate_sentence) - 1):
             if self.laplaceBigramCounts[(candidate_sentence[n], candidate_sentence[n + 1])] > 0:
+                # population: 2gram / 1gram
                 score += math.log(self.laplaceBigramCounts[(candidate_sentence[n], candidate_sentence[n + 1])])
                 score -= math.log(self.laplaceUnigramCounts[candidate_sentence[n]])
             else:
+                # replace word not seen before = word following it : "chất lượng" => "lượng lương"
+                # self.laplaceUnigramCounts[candidate_sentence[n + 1]] + 1
                 score += (math.log(self.laplaceUnigramCounts[candidate_sentence[n + 1]] + 1) + math.log(0.4))
+                # x 0.4 = stupid backoff constant when lowering n-gram
                 # log(a x 0.4) = log(a) + log(0.4)
                 score -= math.log(self.total + len(self.laplaceUnigramCounts))
+                # population: 1gram / all words
         return score
 
     def return_best_sentence(self, old_sentence):
         #   Generate all candiate sentences and
         #   Calculate the prob of each one and return the one with highest probability
         #   Probability involves two part 1. correct probability and 2. language model prob
-        #   correct prob : p(c | w)
-        #   language model prob : use stupid backoff algorithm
+        #   1==P(x|w): xac suat viet nham thuan tuy, 2==P(w): xac suat language model dua tren stupid backoff algorithm
         bestScore = float('-inf')
         bestSentence = []
         old_sentence = [word.lower() for word in old_sentence.split()]
         candidate_sentences, word_count = self.candidate_sentence(old_sentence)
         for candidate_sentence in candidate_sentences:
             candidate_sentence = list(candidate_sentence)
-            score = self.correction_score(word_count, candidate_sentence, old_sentence)
+            score = self.correction_score(word_count, old_sentence, candidate_sentence )
             candidate_sentence.append("")
             candidate_sentence.insert(0, "")
             score += self.score(candidate_sentence)
@@ -162,12 +165,6 @@ class SentenceCorrector:
 
 
 sc = SentenceCorrector('test.txt')
-print(sc.return_best_sentence('đào ngọc dun, booj'))
-print(sc.return_best_sentence("phùng thị tường"))
-print(sc.return_best_sentence('chất nượng'))
-
-# [('đào ngọc dung bố', -19.678122561652934),
-# ('đào ngọc dung hộ', -19.390440489201154),
-# ('đào ngọc dung bị', -19.390440489201154),
-# ('đào ngọc dung độ', -18.474149757326998),
-# ('đào ngọc dung bộ', -16.528239608271683)]
+# print(sc.return_best_sentence('đào ngọc dun, booj'))
+# print(sc.return_best_sentence("phùng thị tường"))
+print(sc.return_best_sentence('chất nượng cuộc xống'))
