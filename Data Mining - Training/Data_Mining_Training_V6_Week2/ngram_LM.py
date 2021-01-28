@@ -109,8 +109,11 @@ class SentenceCorrector:
         return candidate_sentences, words_count
 
     def correction_score(self, words_count, old_sentence, candidate_sentence):
+        # P(X|W)
         score = 1
         for n in range(len(candidate_sentence)):
+            # chay tung tu 1 cua candidate sentence: xac xuat viet tu day == tu cua cau goc la: 0.95
+            # xac suat viet sai la 0.05 chia deu cho cac truong hop con lai
             if candidate_sentence[n] in words_count:
                 score *= 0.95
             else:
@@ -119,6 +122,7 @@ class SentenceCorrector:
         return math.log(score)
 
     def score(self, candidate_sentence):
+        # P(W)
         #     Takes a list of strings as argument and returns the log-probability of the
         #     sentence using the stupid backoff language model.
         #     Use laplace smoothing to avoid new words with 0 probability
@@ -129,8 +133,9 @@ class SentenceCorrector:
                 score -= math.log(self.laplaceUnigramCounts[candidate_sentence[n]])
             else:
                 score += (math.log(self.laplaceUnigramCounts[candidate_sentence[n + 1]] + 1) + math.log(0.4))
+                # log(a x 0.4) = log(a) + log(0.4)
                 score -= math.log(self.total + len(self.laplaceUnigramCounts))
-            return score
+        return score
 
     def return_best_sentence(self, old_sentence):
         #   Generate all candiate sentences and
@@ -156,12 +161,12 @@ class SentenceCorrector:
 
 
 sc = SentenceCorrector('test.txt')
-print(sc.return_best_sentence('đào ngọc dun'))
-# [('đào ngọc dung', -6.4118211062912165),
-# ('đào ngọc dẫn', -6.4118211062912165),
-# ('đào ngọc dân', -6.4118211062912165),
-# ('đào ngọc duy', -6.4118211062912165),
-# ('đào ngọc dun', -6.4118211062912165)]
+print(sc.return_best_sentence('đào ngọc dun, booj'))
+print(sc.return_best_sentence("phùng thị tường"))
+print(sc.return_best_sentence('chất nượng'))
 
-# em cho chayj thử thì đây là 5 ví dụ có điểm thấp nhất. Từ gốc là: "Đào Ngọc Dung". Cái này do cách tính điểm chưa tốt
-# hay là do file nhỏ quá hả anh?
+# [('đào ngọc dung bố', -19.678122561652934),
+# ('đào ngọc dung hộ', -19.390440489201154),
+# ('đào ngọc dung bị', -19.390440489201154),
+# ('đào ngọc dung độ', -18.474149757326998),
+# ('đào ngọc dung bộ', -16.528239608271683)]
