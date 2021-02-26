@@ -152,7 +152,7 @@ class SentenceCorrector:
         candidate_sentences, word_count = self.candidate_sentence(old_sentence)
         for candidate_sentence in candidate_sentences:
             candidate_sentence = list(candidate_sentence)
-            score = self.correction_score(word_count, old_sentence, candidate_sentence )
+            score = self.correction_score(word_count, old_sentence, candidate_sentence)
             candidate_sentence.append("")
             candidate_sentence.insert(0, "")
             score += self.score(candidate_sentence)
