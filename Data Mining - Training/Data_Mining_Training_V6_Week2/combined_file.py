@@ -1,7 +1,7 @@
 from sklearn.linear_model import SGDClassifier
 import re
 from sklearn.datasets import load_files
-from sklearn.feature_extraction.text import TfidfVectorizer,CountVectorizer
+from sklearn.feature_extraction.text import TfidfVectorizer, CountVectorizer
 import pickle
 from sklearn.metrics import accuracy_score
 from sklearn.svm import SVC, LinearSVC
