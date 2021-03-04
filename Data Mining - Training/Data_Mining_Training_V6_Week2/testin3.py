@@ -2,9 +2,8 @@ import re
 import numpy as np
 from unidecode import unidecode
 
-letters = list("abcdefghijklmnopqrstuvwxyz"
-               "áàảãạâấầẩẫậăắằẳẵặóòỏõọôốồổỗộơớờởỡợéèẻẽẹêếềểễệúùủũụưứừửữựíìỉĩịýỳỷỹỵđABCDEFGHIJKLMNOPQRSTUVWXYZ"
-               "ÁÀẢÃẠÂẤẦẨẪẬĂẮẰẲẴẶÓÒỎÕỌÔỐỒỔỖỘƠỚỜỞỠỢÉÈẺẼẸÊẾỀỂỄỆÚÙỦŨỤƯỨỪỬỮỰÍÌỈĨỊÝỲỶỸỴĐ")
+letters = "abcdefghijklmnopqrstuvwxyzáàảãạâấầẩẫậăắằẳẵặóòỏõọôốồổỗộơớờởỡợéèẻẽẹêếềểễệúùủũụưứừửữựíìỉĩịýỳỷỹỵđABCDEFGHIJKL\
+MNOPQRSTUVWXYZÁÀẢÃẠÂẤẦẨẪẬĂẮẰẲẴẶÓÒỎÕỌÔỐỒỔỖỘƠỚỜỞỠỢÉÈẺẼẸÊẾỀỂỄỆÚÙỦŨỤƯỨỪỬỮỰÍÌỈĨỊÝỲỶỸỴĐ"
 letters2 = list("abcdefghijklmnopqrstuvwxyz")
 typo = {"ă": "aw", "â": "aa", "á": "as", "à": "af", "ả": "ar", "ã": "ax", "ạ": "aj", "ắ": "aws", "ổ": "oor", "ỗ": "oox",
         "ộ": "ooj", "ơ": "ow",
@@ -38,15 +37,20 @@ acronym = {"không": "ko", " anh": " a", "em": "e", "biết": "bít", "giờ": "
            "Chồng": "Ck", "Vợ": "Vk", " Ông": " Ô", "Được": "Đc", "Tôi": "T", }
 teen = {"ch": "ck", "ph": "f", "th": "tk", "nh": "nk",
         "Ch": "Ck", "Ph": "F", "Th": "Tk", "Nh": "Nk"}
-
-reverse_typo = {v: k for k, v in typo.items()}
-
-
-def edit_original_word(original_word):
-    for fault in reverse_typo:
-        if fault in original_word:
-            original_word = original_word.replace(fault, reverse_typo[fault])
-    return original_word
+from itertools import chain
 
 
-print(edit_original_word("booj"))
+def tokenize_file(self, training_file):
+    with open(training_file, "r", encoding="UTF-8") as f:
+        file = f.readlines()
+        for sentence in file:
+            sentence = sentence.replace("\n", "")
+            sentence_clean = [n.lower() for n in re.split(rf'[^{letters}]+', sentence) if n]
+            # doc tung sentence cua training file: lower() viet hoa thanh viet thuong,
+            # khi split tat ca nhung ki hieu khong thuoc bang chu cai: "?", "!", "@" se bi xoa
+            # 1 cau se dc tokenize thanh cac tu. Moi sentence clean la 1 list chua phan tu la cac tu
+            if sentence_clean:
+                # replace("\n", "") o tren vs cai nay de loc het nhung cai xuong dong
+                self.sentences.append(sentence_clean)
+    self.all_words = list(chain.from_iterable(self.sentences))
+    # chua tat ca tu cua file. from_iterable de unpack va loc tu giong nhau

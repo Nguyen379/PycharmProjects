@@ -20,6 +20,9 @@ test_data = pd.read_csv("test.csv")
 df = train_data.copy()
 df2 = test_data.copy()
 
+threshold = 0.7
+print(df.isnull().mean())
+
 # df.Sex = df.Sex.apply(lambda x: 1 if x == "male" else 0)
 # df2.Sex = df2.Sex.apply(lambda x: 1 if x == "male" else 0)
 #
