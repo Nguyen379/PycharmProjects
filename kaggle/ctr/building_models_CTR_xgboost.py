@@ -85,3 +85,59 @@ submission = pd.read_csv("sampleSubmission.csv")
 submission[submission.columns[1]] = model.predict_proba(test)[:, 1]
 submission.to_csv("submission.csv", index=False)
 plt.show()
+
+"lan 1"
+# site_id_very_low        0.410412
+# app_id_very_high        0.171345
+# site_id_very_high       0.074036
+# app_id_very_low         0.066942
+# app_category_high       0.064936
+# C16_250                 0.033630
+# C18_1                   0.023407
+# device_model_very_high  0.020505
+# site_domain_very_low    0.013967
+# device_model_low        0.013492
+# device_model_very_low   0.011123
+# site_category_high      0.010360
+# banner_pos_0            0.007240
+# C18_2                   0.006909
+# site_id_high            0.006498
+# device_conn_type_0      0.005360
+# hour_17-19              0.005260
+# hour_19-21              0.005151
+# C15_216                 0.004563
+# C18_3                   0.004517
+# banner_pos_1            0.004416
+# app_domain_low          0.004005
+# site_category_mid       0.003578
+# weekday_2               0.003395
+# device_conn_type_2      0.003371
+# weekday_3               0.003258
+# device_ip_mid           0.003227
+# hour_21-23              0.003029
+# app_id_low              0.002762
+# device_ip_very_high     0.002712
+# C1_1012                 0.002375
+# device_ip_very_low      0.002294
+# app_domain_very_high    0.001928
+
+"lan 2"
+# site_id_very_low        0.410412
+# app_id_very_high        0.171345
+# site_id_very_high       0.074036
+# app_id_very_low         0.066942
+# app_category_high       0.064936
+# C16_250                 0.033630
+# C18_1                   0.023407
+# device_model_very_high  0.020505
+# site_domain_very_low    0.013967
+# device_model_low        0.013492
+# device_model_very_low   0.011123
+# site_category_high      0.010360
+# banner_pos_0            0.007240
+# C18_2                   0.006909
+# site_id_high            0.006498
+# device_conn_type_0      0.005360
+# hour_17-19              0.005260
+# hour_19-21              0.005151
+

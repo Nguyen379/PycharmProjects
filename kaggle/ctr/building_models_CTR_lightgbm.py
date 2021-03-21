@@ -96,7 +96,6 @@ print(feature_importances)
 cols = feature_importances[feature_importances[feature_importances.columns[0]] > 150]
 print(cols)
 
-
 from sklearn.metrics import roc_auc_score, confusion_matrix
 
 feature_len = len(cols)
@@ -135,55 +134,36 @@ submission = pd.read_csv("sampleSubmission.csv")
 submission[submission.columns[1]] = clf.predict_proba(X_test)[:, 1]
 submission.to_csv("submission_lightgbm.csv", index=False)
 plt.show()
-# site_id_very_low        0.410412
-# app_id_very_high        0.171345
-# site_id_very_high       0.074036
-# app_id_very_low         0.066942
-# app_category_high       0.064936
-# C16_250                 0.033630
-# C18_1                   0.023407
-# device_model_very_high  0.020505
-# site_domain_very_low    0.013967
-# device_model_low        0.013492
-# device_model_very_low   0.011123
-# site_category_high      0.010360
-# banner_pos_0            0.007240
-# C18_2                   0.006909
-# site_id_high            0.006498
-# device_conn_type_0      0.005360
-# hour_17-19              0.005260
-# hour_19-21              0.005151
-# C15_216                 0.004563
-# C18_3                   0.004517
-# banner_pos_1            0.004416
-# app_domain_low          0.004005
-# site_category_mid       0.003578
-# weekday_2               0.003395
-# device_conn_type_2      0.003371
-# weekday_3               0.003258
-# device_ip_mid           0.003227
-# hour_21-23              0.003029
-# app_id_low              0.002762
-# device_ip_very_high     0.002712
-# C1_1012                 0.002375
-# device_ip_very_low      0.002294
-# app_domain_very_high    0.001928
 
-# site_id_very_low        0.410412
-# app_id_very_high        0.171345
-# site_id_very_high       0.074036
-# app_id_very_low         0.066942
-# app_category_high       0.064936
-# C16_250                 0.033630
-# C18_1                   0.023407
-# device_model_very_high  0.020505
-# site_domain_very_low    0.013967
-# device_model_low        0.013492
-# device_model_very_low   0.011123
-# site_category_high      0.010360
-# banner_pos_0            0.007240
-# C18_2                   0.006909
-# site_id_high            0.006498
-# device_conn_type_0      0.005360
-# hour_17-19              0.005260
-# hour_19-21              0.005151
+"lan 1"
+# device_model_mid        7989
+# device_model_very_high  6613
+# C18_0                   5779
+# weekday_1               5556
+# C18_3                   5331
+# ...                      ...
+# C16_20                     0
+# C16_1024                   0
+# C15_768                    0
+# C15_120                    0
+# C16_90                     0
+#
+# [101 rows x 1 columns]
+
+"lan 2"
+# device_model_mid        7989
+# device_model_very_high  6613
+# C18_0                   5779
+# weekday_1               5556
+# C18_3                   5331
+# ...                      ...
+# C1_1012                  294
+# device_type_5            266
+# C16_480                  260
+# device_type_1            175
+# C15_728                  173
+#
+# [80 rows x 1 columns]
+
+# Em thấy điểm thấp như vậy vì lightgbm xác định sai những cái feature importances: lẽ ra những cái app_id, site_id phải
+# cao hơn nhiều như trong ảnh xgboost
