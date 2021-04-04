@@ -4,3 +4,4 @@
 "L1 will shrink less important feature's coefficient to 0 => create sparse vectors of weights like (0, 1, 0, 1, 1, 0)" \
     "=> works well for feature selection when dataset is large"
 "L2 will create sparsity of weights like (0.5, 0.3, -0.2, 0.4, 0.1) => L2 will go towards 0 but never = 0"
+""
