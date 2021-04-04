@@ -36,3 +36,4 @@ model = SVC(C=10)
 clf = model.fit(X_train, y_train)
 print(clf.score(X_test, y_test))  # 0.92
 "PCA giảm số cột từ 4 xuống 1 trong khi accuracy giảm từ 1 => 0.92"
+
