@@ -27,7 +27,7 @@ for file in new_combined_files[:len(train_files)]:
             dict_all_words[word] += 1
 
 one_quarter = len(dict_all_words.items()) // 4 #55214
-sorted_dict_words = sorted(dict_all_words.items(), key=lambda x: x[1], reverse=True)[:one_quarter]
+sorted_dict_words = sorted(dict_all_words.items(), key=lambda x: x[1])[-one_quarter:]
 dict_best_words = {k: sorted_dict_words.index((k, v)) for (k, v) in sorted_dict_words}
 edited_combined_file = []
 for file in new_combined_files:

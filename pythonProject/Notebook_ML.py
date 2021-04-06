@@ -1,6 +1,9 @@
 import numpy as np
 
 """Buoi 1: Numpy"""
+# Axis 0 will act on all the ROWS in each COLUMN
+# Axis 1 will act on all the COLUMNS in each ROW
+
 a = np.array([[1, 2, 3, 4, 5]], dtype='float32')
 print(type(a))
 print(a.shape)

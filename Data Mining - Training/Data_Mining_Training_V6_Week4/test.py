@@ -1,2 +1,5 @@
-import tensorflow as tf
-print(tf.test.is_built_with_cuda())
+import numpy
+from keras.datasets import imdb
+
+for n in range(2, 20, 2):
+    print(n)

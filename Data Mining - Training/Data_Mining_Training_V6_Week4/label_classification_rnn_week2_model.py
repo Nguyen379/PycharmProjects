@@ -18,8 +18,7 @@ max_len = 0
 for n in X_train:
     if len(n) > max_len:
         max_len = len(n)
-max_review_len = max_len//2
-
+max_review_len = max_len//10
 dense_output = len(np.unique(y_train))
 
 X_train = sequence.pad_sequences(X_train, maxlen=max_review_len)
