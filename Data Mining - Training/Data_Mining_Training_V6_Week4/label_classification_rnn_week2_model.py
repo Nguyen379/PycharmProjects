@@ -14,13 +14,15 @@ X_test = pickle.load(open("X_test.pickle", "rb"))
 y_train = pickle.load(open("y_train.pickle", "rb"))
 y_test = pickle.load(open("y_test.pickle", "rb"))
 
+# giới hạn độ dài mỗi file chỉ bằng 1/10 độ dài file dài nhất
 max_len = 0
 for n in X_train:
     if len(n) > max_len:
         max_len = len(n)
 max_review_len = max_len//10
+#  output là số category
 dense_output = len(np.unique(y_train))
-
+# pad sequence dựa theo max_len. Convert thành dạng ndarray rồi reshape để tính toán
 X_train = sequence.pad_sequences(X_train, maxlen=max_review_len)
 X_test = sequence.pad_sequences(X_test, maxlen=max_review_len)
 X_train = np.array(X_train)
@@ -34,8 +36,8 @@ print(y_test.shape)
 
 model = Sequential()
 
-model.add(Embedding(55214, 512, input_length=max_review_len))
-# one_auarter == 55214 => look at create_file
+model.add(Embedding(81306, 512, input_length=max_review_len))
+# one_auarter == 81306 => look at create_file
 # model.add(SpatialDropout1D(0.2)
 model.add(Conv1D(filters=512, kernel_size=3, padding='same', activation='relu'))
 model.add(MaxPooling1D(pool_size=2))
