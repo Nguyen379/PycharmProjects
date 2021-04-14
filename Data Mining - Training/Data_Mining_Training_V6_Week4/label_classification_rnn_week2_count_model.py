@@ -31,8 +31,7 @@ X_train, X_test = X[:len_train_file], X[len_train_file:]
 dense_output = len(np.unique(y_train))
 model = Sequential()
 
-model.add(Embedding(8178, 50, input_length=max_review_len))
-# one_tenth == 32522 => look at create_file
+model.add(Embedding(max_features, 50, input_length=max_review_len))
 # model.add(SpatialDropout1D(0.2)
 model.add(Conv1D(filters=50, kernel_size=3, padding='same', activation='relu'))
 model.add(MaxPooling1D(pool_size=2))
