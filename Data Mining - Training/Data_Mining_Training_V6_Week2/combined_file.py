@@ -103,3 +103,5 @@ print(accuracy_score(categories_test2, categories_pred2))
 print(f1_score(categories_test2, categories_pred, average='macro'))
 print(f1_score(categories_test2, categories_pred, average='micro'))
 print(f1_score(categories_test2, categories_pred, average='weighted'))
+
+"Accuracy_score là 0.9"
