@@ -12,7 +12,7 @@ from sklearn.preprocessing import MinMaxScaler, StandardScaler
 plt.style.use('fivethirtyeight')
 sns.set(style='whitegrid', color_codes=True)
 
-for root, directory, file in os.walk("C:\\Users\\Asus\\PycharmProjects\\kaggle"):
+for root, directory, file in os.walk("/kaggle, hackerrank, etc"):
     for f in file:
         print(os.path.join(root, f))
 
