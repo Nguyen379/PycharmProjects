@@ -1,5 +1,4 @@
 # https://www.hackerrank.com/challenges/correlation-and-regression-lines-6/problem?fbclid=IwAR00Gpuf2lVZ777HE6tfk7NL5qzsx9O1djqhmDrzP2f4iWgfbr-PwNRsAwQ
-
 import math
 import numpy as np
 physics = [15, 12, 8, 8, 7, 7, 7, 6, 5, 3]
