@@ -78,3 +78,6 @@ for _ in range(test_cases):
                 board.Move(dice.Roll())
         lst1.append(turn)
     print(np.mean(lst1))
+# 173.3052
+# 123.1742
+# 167.0906
