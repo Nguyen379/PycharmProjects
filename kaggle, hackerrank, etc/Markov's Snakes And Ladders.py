@@ -66,7 +66,7 @@ for _ in range(test_cases):
     l1_move = input()
     s1_move = input()
     for _ in range(5000):
-        board = Board(l1_move, s1_move, 0)
+        board = Board(l1_move, s1_move, 1)
         dice = Dice(prob1)
         turn = 0
         while not board.end_game:
@@ -78,6 +78,7 @@ for _ in range(test_cases):
                 board.Move(dice.Roll())
         lst1.append(turn)
     print(np.mean(lst1))
-# 173.3052
-# 123.1742
-# 167.0906
+
+# 171.233
+# 95.2886
+# 167.4198

@@ -1,81 +1,89 @@
+import fileinput
 import random
-import numpy as np
-
-test_cases = int(input())
 
 
-class Dice:
-    def __init__(self, prob):
-        self.prob = prob
-        self.move = 0
-        self.num_prob = [float(n) for n in self.prob.split(",")]
-        self.num_prob = np.cumsum(self.num_prob)
+def parse_params():
+    lines = fileinput.input()
+    num_cases = int(lines[0])
+    tests = []
+    for i in range(num_cases):
+        probs = lines[4 * i + 1].strip().split(",")
+        probs = [float(x) for x in probs]
+        num_ladders, num_snakes = lines[4 * i + 2].strip().split(",")
+        # check num of ladder and num of snakes. Smaller than 15
+        ladders = lines[4 * i + 3].strip().split(" ")
+        snakes = lines[4 * i + 4].strip().split(" ")
+        tests.append([probs, ladders, snakes])
+    return tests
 
-    def Roll(self):
-        roll = round(random.uniform(0.01, 1), 2)
-        if roll <= self.num_prob[0]:
-            self.move = 1
-        elif self.num_prob[0] < roll <= self.num_prob[1]:
-            self.move = 2
-        elif self.num_prob[1] < roll <= self.num_prob[2]:
-            self.move = 3
-        elif self.num_prob[2] < roll <= self.num_prob[3]:
-            self.move = 4
-        elif self.num_prob[3] < roll <= self.num_prob[4]:
-            self.move = 5
+
+class BoardGame:
+    def __init__(self, events):
+        self.current = 1
+        self.starts = []
+        self.ends = []
+        for p in events:
+            start, end = [int(x) for x in p.split(",")]
+            self.starts.append(start)
+            self.ends.append(end)
+
+    def move(self, num):
+        if self.current + num <= 100:
+            self.current += num
+        if self.current in self.starts:
+            self.current = self.ends[self.starts.index(self.current)]
+        return self.current
+
+
+def add_one_by_one(l):
+    new_l = []
+    cumsum = 0
+    for elt in l:
+        cumsum += elt
+        new_l.append(cumsum)
+    return new_l
+
+
+class Die:
+    def __init__(self, probs):
+        self.probs = add_one_by_one(probs)
+
+    def roll(self):
+        rand = random.uniform(0, 1)
+        if rand <= self.probs[0]:
+            return 1
+        elif rand > self.probs[0] and rand <= self.probs[1]:
+            return 2
+        elif rand > self.probs[1] and rand <= self.probs[2]:
+            return 3
+        elif rand > self.probs[2] and rand <= self.probs[3]:
+            return 4
+        elif rand > self.probs[3] and rand <= self.probs[4]:
+            return 5
         else:
-            self.move = 6
-        return self.move
+            return 6
 
 
-class Board:
-    def __init__(self, l_move, s_move, position):
-        self.board = [n for n in range(0, 101)]
-        self.l_move = [n.split(",") for n in l_move.split(" ")]
-        self.s_move = [n.split(",") for n in s_move.split(" ")]
-        self.l_dict = {}
-        self.position = self.board[position]
-        self.end_game = False
-        for pack in self.l_move:
-            self.l_dict[int(pack[0])] = int(pack[1])
-        self.s_dict = {}
-        for pack in self.s_move:
-            self.s_dict[int(pack[0])] = int(pack[1])
-        self.board = [self.l_dict.get(n, n) for n in self.board]
-        self.board = [self.s_dict.get(n, n) for n in self.board]
-
-    def Win(self):
-        self.end_game = True
-
-    def Move(self, move):
-        if self.position + move > 100:
-            pass
-        elif self.position + move == 100:
-            self.Win()
-        else:
-            self.position += move
-        self.position = self.board[self.position]
+def play(probs, ladders, snakes):
+    board = BoardGame(ladders + snakes)
+    die = Die(probs)
+    num_moves = 0
+    while num_moves < 1000 and board.move(die.roll()) != 100:
+        num_moves += 1
+    return num_moves
 
 
-lst = []
+def main():
+    tests = parse_params()
+    for params in tests:
+        sum = 0
+        num_trials = 0
+        for i in range(5000):  # 5000 trials
+            num_moves = play(*params)
+            if num_moves < 1000:
+                sum += num_moves
+        print(int(sum / 5000))
 
-for _ in range(test_cases):
-    lst1 = []
-    prob1 = input()
-    ls1 = input()
-    l1_move = input()
-    s1_move = input()
-    for _ in range(5000):
-        board = Board(l1_move, s1_move, 0)
-        dice = Dice(prob1)
-        turn = 0
-        while not board.end_game:
-            if turn > 1000:
-                turn = 1000
-                break
-            else:
-                turn += 1
-                board.Move(dice.Roll())
-        lst1.append(turn)
-    lst.append(np.mean(lst1))
-print(lst)
+
+if _name_ == "_main_":
+    main()
